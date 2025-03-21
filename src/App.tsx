@@ -69,17 +69,24 @@ export const App: React.FC = () => {
       return todos;
     }
 
-    const isCompleted = filterType === 'completed';
-
     return todos.filter(item => {
+      const matchesQuery = item.title
+        .toLowerCase()
+        .includes(query.toLowerCase());
+
       if (filterType === 'all') {
-        return item.title.toLowerCase().includes(query.toLowerCase());
+        return matchesQuery;
       }
 
-      return (
-        item.title.toLowerCase().includes(query.toLowerCase()) &&
-        item.completed === isCompleted
-      );
+      if (filterType === 'completed') {
+        return matchesQuery && item.completed;
+      }
+
+      if (filterType === 'active') {
+        return matchesQuery && !item.completed;
+      }
+
+      return false;
     });
   }, [todos, query, filterType]);
 
